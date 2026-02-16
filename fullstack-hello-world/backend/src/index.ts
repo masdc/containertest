@@ -1,15 +1,10 @@
 import express from 'express';
-import path from 'path';
 import { addRecord, getRecords, initDb } from './database';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
-
-// Serve static files from the React app build folder
-
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 app.post('/api/records', async (req, res) => {
     const { name } = req.body;
@@ -30,12 +25,6 @@ app.get('/api/records', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Failed to retrieve records' });
     }
-});
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 const start = async () => {
