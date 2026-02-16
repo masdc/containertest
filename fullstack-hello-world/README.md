@@ -12,20 +12,31 @@ A basic web application with a React frontend (Tailwind CSS), Node.js/Express ba
 ## How to Run
 
 1. Make sure you have Docker and Docker Compose installed.
-2. Run the following command in the root directory:
+2. Create your local environment file from the template:
 
    ```bash
-   docker compose up --build
+   cp .env.example .env
+   ```
+3. For local development (with local Postgres container), run:
+
+   ```bash
+   docker compose --profile local up --build
    ```
 
-3. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
 
 If you previously ran a different Postgres major version and DB startup fails, reset the local DB volume and start again:
 
 ```bash
 docker compose down -v
-docker compose up --build
+docker compose --profile local up --build
 ```
+
+## Local vs Production Database
+
+- Local: `.env` contains `DATABASE_URL=postgres://user:password@db:5432/mydatabase` and you start with `--profile local`.
+- Production: GitHub Action deploy uses `PROD_DATABASE_URL` repository secret and runs `docker compose up --build -d` (without `--profile local`), so no local Postgres container is started on VPS.
+- Template: `.env.example` provides local defaults and a production `DATABASE_URL` format example.
 
 ## Project Structure
 
