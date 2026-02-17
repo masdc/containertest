@@ -29,6 +29,11 @@ jobs:
 
             APP_DIR="${{ secrets.HOSTINGER_APP_DIR }}"
             BRANCH="main"
+<<<<<<< Updated upstream
+=======
+            GH_PAT="${{ secrets.GH_PAT }}"
+            REPO_URL="https://github.com/${{ github.repository }}.git"
+>>>>>>> Stashed changes
 
             if [ -z "$APP_DIR" ]; then
               echo "HOSTINGER_APP_DIR secret is required"
@@ -40,8 +45,23 @@ jobs:
               exit 1
             fi
 
+<<<<<<< Updated upstream
             cd "$APP_DIR"
             git fetch origin
+=======
+            GH_PAT_CLEAN="$(printf %s "$GH_PAT" | tr -d '\r\n')"
+            AUTH_HEADER="Authorization: Bearer $GH_PAT_CLEAN"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "Repository not found in $APP_DIR. Cloning..."
+              rm -rf "$APP_DIR"
+              git -c http.extraHeader="$AUTH_HEADER" clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
+            fi
+
+            cd "$APP_DIR"
+            git remote set-url origin "$REPO_URL"
+            git -c http.extraHeader="$AUTH_HEADER" fetch origin
+>>>>>>> Stashed changes
             git checkout "$BRANCH"
             git reset --hard "origin/$BRANCH"
 
