@@ -4,46 +4,70 @@ A basic web application with a React frontend (Tailwind CSS), Node.js/Express ba
 
 ## Architecture
 
-- **Frontend**: React + Vite running in its own container.
-- **Backend**: Node.js + Express API running in its own container.
-- **Database**: Postgres running in its own container.
-- **Orchestration**: Docker Compose.
+- **Frontend**: React application with Vite and Tailwind CSS, running in a Docker container.
+- **Backend**: Node.js/Express REST API, running in a Docker container.
+- **Database**: PostgreSQL database, running in a Docker container.
+- **Orchestration**: Docker Compose manages all three services with automatic service discovery and health checks.
 
-## How to Run
+## How to Run Locally
 
-1. Make sure you have Docker and Docker Compose installed.
-2. Create your local environment file from the template:
+1. Ensure Docker and Docker Compose are installed on your system.
+2. Navigate to the project directory:
 
    ```bash
-   cp .env.example .env
+   cd fullstack-hello-world
    ```
-3. For local development (with local Postgres container), run:
+
+3. Start all services (frontend, backend, and Postgres database):
 
    ```bash
-   docker compose --profile local up --build
+   docker compose up --build
    ```
 
 4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
 
-If you previously ran a different Postgres major version and DB startup fails, reset the local DB volume and start again:
+The application includes:
+- **Frontend**: Running on port 3000
+- **Backend API**: Running on port 5000
+- **Postgres Database**: Running on port 5432 (accessible locally)
+
+To stop the services:
+
+```bash
+docker compose down
+```
+
+To reset the database volume and start fresh:
 
 ```bash
 docker compose down -v
-docker compose --profile local up --build
+docker compose up --build
 ```
 
-## Local vs Production Database
+## Deployment
 
-- Local: `.env` contains `DATABASE_URL=postgres://user:password@db:5432/mydatabase` and you start with `--profile local`.
-- Production: GitHub Action deploy uses `PROD_DATABASE_URL` repository secret and runs `docker compose up --build -d` (without `--profile local`), so no local Postgres container is started on VPS.
-- Template: `.env.example` provides local defaults and a production `DATABASE_URL` format example.
+For production deployment to Hostinger VPS using Dokploy:
+
+1. Ensure your code is pushed to a GitHub repository.
+2. Set up a Dokploy project and configure it to pull from your repository.
+3. Configure the `DATABASE_URL` environment variable for your production database in Dokploy.
+4. Deploy using Dokploy's deployment interface.
 
 ## Project Structure
 
 ```
-fullstack-hello-world
-├── backend           # Node.js + Express container
-├── frontend          # React + Vite container
-├── docker-compose.yml
-└── .env
+fullstack-hello-world/
+├── frontend/                # React + Vite + Tailwind CSS
+│   ├── src/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── vite.config.ts
+├── backend/                 # Node.js + Express
+│   ├── src/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Multi-stage build (if applicable)
+└── README.md
 ```
