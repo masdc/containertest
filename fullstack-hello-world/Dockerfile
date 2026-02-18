@@ -18,7 +18,7 @@ RUN npm run build
 FROM node:alpine
 WORKDIR /app
 
-# Copy backend build and dependencies
+# Copy backend build and dependencies. 
 COPY --from=backend-build /app/backend/dist /app/backend/dist
 COPY --from=backend-build /app/backend/package*.json /app/backend/
 WORKDIR /app/backend
@@ -27,7 +27,7 @@ RUN npm install --omit=dev
 # Copy frontend static files
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 
-# Set permissions (important for some environments)
+# Set permissions (important for some environments).
 USER node
 
 EXPOSE 5000
